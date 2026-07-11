@@ -177,8 +177,8 @@ def send_email(user_email, message, name="User"):
         t1.start()
         t2.start()
 
-        t1.join()
-        t2.join()
+        # t1.join()
+        # t2.join()
 
         print("✅ Both emails triggered")
 
