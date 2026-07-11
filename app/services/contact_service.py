@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks
 from app.services.email_service import send_email
 from app.db.database import get_db
-from app.models.contact import Contact
+from app.models.contact_model import Contact
 
 router = APIRouter()
 
