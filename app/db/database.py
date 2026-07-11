@@ -1,3 +1,9 @@
+import mysql.connector
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 def get_db():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
@@ -5,5 +11,5 @@ def get_db():
         password=os.getenv("DB_PASSWORD"),
         database=os.getenv("DB_NAME"),
         port=3306,
-        ssl_disabled=False   # 👈 IMPORTANT
+        ssl_disabled=False
     )
