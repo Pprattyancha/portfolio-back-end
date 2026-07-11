@@ -49,9 +49,40 @@ async def send_email(user_email: str, message: str, name: str = "User"):
         },
         "to": [{"email": user_email}],
         "subject": "🙌 Thanks for contacting us",
-        "htmlContent": f"""
-        <h3>Hi {name},</h3>
-        <p>Thanks for reaching out! I'll get back to you soon.</p>
+        'htmlContent' : f"""
+        <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px;">
+        <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+
+            <h2 style="color: #2d3748; margin-bottom: 10px;">Hi {name}, 👋</h2>
+
+            <p style="color: #4a5568; font-size: 15px;">
+            Thank you for reaching out! I’ve received your message and really appreciate you taking the time to connect.
+            </p>
+
+            <p style="color: #4a5568; font-size: 15px;">
+            I’ll review your message and get back to you as soon as possible.
+            </p>
+
+            <div style="margin: 25px 0; padding: 15px; background: #f7fafc; border-left: 4px solid #3182ce;">
+            <p style="margin: 0; color: #2d3748; font-size: 14px;">
+                💡 <strong>Quick Note:</strong> If your query is urgent, feel free to reply directly to this email.
+            </p>
+            </div>
+
+            <p style="color: #4a5568; font-size: 15px;">
+            Best regards,<br>
+            <strong>Prattyancha Patharkar</strong><br>
+            Frontend Lead
+            </p>
+
+            <hr style="margin: 25px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+            <p style="font-size: 12px; color: #a0aec0; text-align: center;">
+            This is an automated response confirming receipt of your message.
+            </p>
+
+        </div>
+        </div>
         """
     }
 
