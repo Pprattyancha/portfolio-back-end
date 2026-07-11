@@ -1,12 +1,7 @@
-from fastapi import APIRouter, BackgroundTasks
-from app.services.email_service import send_email
 from app.db.database import get_db
-from app.models.contact_model import Contact
+from app.services.email_service import send_email
 
-router = APIRouter()
-
-@router.post("/add-contact")
-def add_contact(contact: Contact, background_tasks: BackgroundTasks):
+def add_contact(contact, background_tasks):
     try:
         db = get_db()
         cursor = db.cursor()
@@ -26,6 +21,9 @@ def add_contact(contact: Contact, background_tasks: BackgroundTasks):
             contact.message,
             contact.name
         )
+
+        cursor.close()
+        db.close()
 
         return {"message": "Contact saved & email will be sent"}
 
