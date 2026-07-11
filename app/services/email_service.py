@@ -93,16 +93,24 @@
 
 import os
 import requests
+import threading
 from dotenv import load_dotenv
 
 load_dotenv()
 
 BREVO_API_KEY = os.getenv("BREVO_API_KEY")
-
 ADMIN_EMAIL = "prattyancha009@gmail.com"
 
 
-def send_email(user_email: str, message: str, name: str = "User"):
+def send_email_async(data, headers, url):
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        print("Email status:", response.status_code, response.text)
+    except Exception as e:
+        print("Async email error:", e)
+
+
+def send_email(user_email, message, name="User"):
     try:
         if not BREVO_API_KEY:
             raise Exception("BREVO_API_KEY missing")
@@ -116,48 +124,63 @@ def send_email(user_email: str, message: str, name: str = "User"):
         }
 
         # =========================
-        # 1️⃣ Email to ADMIN
+        # 1️⃣ ADMIN EMAIL DATA
         # =========================
         admin_data = {
             "sender": {
                 "email": ADMIN_EMAIL,
                 "name": "Portfolio Contact"
             },
-            "to": [{"email": ADMIN_EMAIL}],
+            "to": [
+                {"email": ADMIN_EMAIL}
+            ],
             "subject": "🚀 New Contact Message",
             "htmlContent": f"""
-                <h2>New Contact</h2>
+                <h2>📩 New Contact Form Submission</h2>
                 <p><b>Name:</b> {name}</p>
                 <p><b>Email:</b> {user_email}</p>
+                <p><b>Message:</b></p>
                 <p>{message}</p>
             """
         }
 
-        r1 = requests.post(url, json=admin_data, headers=headers)
-        print("Admin email:", r1.status_code, r1.text)
-
         # =========================
-        # 2️⃣ Auto-reply to USER
+        # 2️⃣ USER AUTO-REPLY DATA
         # =========================
         user_data = {
             "sender": {
                 "email": ADMIN_EMAIL,
                 "name": "Prattyancha"
             },
-            "to": [{"email": user_email}],
-            "subject": "Thanks for contacting us 🙌",
+            "to": [
+                {"email": user_email}
+            ],
+            "subject": "🙌 Thanks for contacting us",
             "htmlContent": f"""
-                <h3>Hi {name}</h3>
-                <p>We received your message.</p>
-                <p>We'll get back to you soon.</p>
+                <h3>Hi {name}, 👋</h3>
+                <p>Thank you for reaching out!</p>
+                <p>We have received your message and will get back to you shortly.</p>
+
+                <br/>
+                <p><b>Your Message:</b></p>
+                <p>{message}</p>
+
+                <br/>
+                <p>Best regards,<br/>Prattyancha</p>
             """
         }
 
-        r2 = requests.post(url, json=user_data, headers=headers)
-        print("User email:", r2.status_code, r2.text)
+        # 🚀 Run both emails in parallel
+        t1 = threading.Thread(target=send_email_async, args=(admin_data, headers, url))
+        t2 = threading.Thread(target=send_email_async, args=(user_data, headers, url))
 
-        if r1.status_code != 201 or r2.status_code != 201:
-            raise Exception("Email sending failed")
+        t1.start()
+        t2.start()
+
+        t1.join()
+        t2.join()
+
+        print("✅ Both emails triggered")
 
         return True
 

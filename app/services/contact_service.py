@@ -1,7 +1,10 @@
-from app.db.database import get_db
+from fastapi import APIRouter, BackgroundTasks
 from app.services.email_service import send_email
 
-def add_contact(contact):
+router = APIRouter()
+
+@router.post("/add-contact")
+def add_contact(contact, background_tasks: BackgroundTasks):
     try:
         db = get_db()
         cursor = db.cursor()
@@ -14,21 +17,15 @@ def add_contact(contact):
 
         print("DB insert success")
 
-        # ✅ Send email safely
-        try:
-            send_email(contact.email, contact.message, contact.name)
-            email_status = "Email sent"
-        except Exception as e:
-            print("Email error:", e)
-            email_status = "Email failed"
+        # ✅ run email in background
+        background_tasks.add_task(
+            send_email,
+            contact.email,
+            contact.message,
+            contact.name
+        )
 
-        cursor.close()
-        db.close()
-
-        return {
-            "message": "Contact saved",
-            "email_status": email_status
-        }
+        return {"message": "Contact saved & email will be sent"}
 
     except Exception as e:
         print("ERROR:", e)
