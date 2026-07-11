@@ -48,7 +48,7 @@ async def send_email(user_email: str, message: str, name: str = "User"):
             "name": "Prattyancha"
         },
         "to": [{"email": user_email}],
-        "subject": "🙌 Thanks for contacting us",
+        "subject": "🙌 Thanks for contacting",
         'htmlContent' : f"""
         <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px;">
         <div style="max-width: 600px; margin: auto; background: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
